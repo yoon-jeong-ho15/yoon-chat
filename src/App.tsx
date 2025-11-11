@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
+import NotificationsPage from "./pages/Notifications";
 import Navigation from "./components/common/Navigation";
 import HomePage from "./pages/Home";
 
@@ -45,6 +46,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <MessagePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />
