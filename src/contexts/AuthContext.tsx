@@ -3,6 +3,15 @@ import type { ReactNode } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { AuthUser } from "../lib/types";
 import { supabase } from "../lib/supabase";
+import {
+  DEFAULT_USER_FROM,
+  DEFAULT_FRIEND_GROUP,
+  ERROR_MESSAGES,
+} from "../lib/constants";
+import {
+  generateUsernameFromOAuthUser,
+  isInvalidCredentialsError,
+} from "../lib/utils/auth";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -90,11 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data as AuthUser);
       } else if (error) {
         // If profile doesn't exist, create one for OAuth users
-        const username =
-          supabaseUser.user_metadata?.full_name ||
-          supabaseUser.user_metadata?.name ||
-          supabaseUser.email?.split("@")[0] ||
-          "User";
+        const username = generateUsernameFromOAuthUser(supabaseUser);
 
         const { data: newProfile, error: insertError } = await supabase
           .from("user")
@@ -107,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .single();
 
         if (insertError) {
-          console.error("Error creating user profile:", insertError);
+          console.error(ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED, insertError);
         } else if (newProfile) {
           setUser(newProfile as AuthUser);
         }
@@ -122,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       if (!email || !password) {
-        return { success: false, error: "이메일과 비밀번호를 입력해주세요." };
+        return { success: false, error: ERROR_MESSAGES.AUTH.EMAIL_PASSWORD_REQUIRED };
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -131,10 +136,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
+        if (isInvalidCredentialsError(error.message)) {
           return {
             success: false,
-            error: "이메일 또는 비밀번호가 올바르지 않습니다.",
+            error: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
           };
         }
         return { success: false, error: error.message };
@@ -145,10 +150,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: true };
       }
 
-      return { success: false, error: "로그인에 실패했습니다." };
+      return { success: false, error: ERROR_MESSAGES.AUTH.LOGIN_FAILED };
     } catch (error) {
       console.error("Login error:", error);
-      return { success: false, error: "로그인 중 오류가 발생했습니다." };
+      return { success: false, error: ERROR_MESSAGES.AUTH.LOGIN_ERROR };
     }
   };
 
@@ -169,7 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: true };
     } catch (error) {
       console.error("Google login error:", error);
-      return { success: false, error: "Google 로그인 중 오류가 발생했습니다." };
+      return { success: false, error: ERROR_MESSAGES.AUTH.GOOGLE_LOGIN_ERROR };
     }
   };
 
@@ -181,7 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ) => {
     try {
       if (!email || !password || !username) {
-        return { success: false, error: "모든 필드를 입력해주세요." };
+        return { success: false, error: ERROR_MESSAGES.AUTH.ALL_FIELDS_REQUIRED };
       }
 
       // Sign up with Supabase Auth
@@ -205,23 +210,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { error: profileError } = await supabase.from("user").insert({
           id: data.user.id,
           username,
-          from: metadata?.from || "0",
+          from: metadata?.from || DEFAULT_USER_FROM,
           profile_pic: metadata?.profile_pic || "",
-          friend_group: metadata?.friend_group || "0",
+          friend_group: metadata?.friend_group || DEFAULT_FRIEND_GROUP,
         });
 
         if (profileError) {
-          console.error("Error creating user profile:", profileError);
-          return { success: false, error: "프로필 생성에 실패했습니다." };
+          console.error(ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED, profileError);
+          return { success: false, error: ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED };
         }
 
         return { success: true };
       }
 
-      return { success: false, error: "회원가입에 실패했습니다." };
+      return { success: false, error: ERROR_MESSAGES.AUTH.SIGNUP_FAILED };
     } catch (error) {
       console.error("Signup error:", error);
-      return { success: false, error: "회원가입 중 오류가 발생했습니다." };
+      return { success: false, error: ERROR_MESSAGES.AUTH.SIGNUP_ERROR };
     }
   };
 

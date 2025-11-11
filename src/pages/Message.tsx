@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import MessageList from "../components/message/MessageList";
+import MessageList, { type MessageListRef } from "../components/message/MessageList";
 import MessageForm from "../components/message/MessageForm";
 
 export default function MessagePage() {
   const { user } = useAuth();
-  const messageListRef = useRef<{ loadMessages: () => void }>(null);
+  const messageListRef = useRef<MessageListRef>(null);
 
   if (!user) {
     return (
@@ -17,8 +17,8 @@ export default function MessagePage() {
 
   // Refresh messages after sending
   const handleMessageSent = () => {
-    // Trigger a reload of messages
-    window.location.reload();
+    // Trigger a reload of messages without full page reload
+    messageListRef.current?.loadMessages();
   };
 
   return (
@@ -31,6 +31,7 @@ export default function MessagePage() {
               <p className="text-sm opacity-90">Send and receive messages</p>
             </div>
             <MessageList
+              ref={messageListRef}
               currentUserId={user.id}
               currentUsername={user.username}
             />
