@@ -4,6 +4,7 @@ import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
 import Navigation from "./components/common/Navigation";
+import HomePage from "./pages/Home";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -30,6 +31,7 @@ function AppRoutes() {
       <div className="flex-1">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/profile"
             element={
