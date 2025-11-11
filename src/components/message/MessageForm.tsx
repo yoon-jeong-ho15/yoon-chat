@@ -1,5 +1,11 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { insertMessage } from "../../lib/data/message";
+import {
+  MESSAGE_MAX_LENGTH,
+  MESSAGE_MIN_LENGTH,
+  ERROR_MESSAGES,
+  UI_TEXT,
+} from "../../lib/constants";
 
 interface MessageFormProps {
   currentUserId: string;
@@ -18,7 +24,20 @@ export default function MessageForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!message.trim() || isSubmitting) {
+    const trimmedMessage = message.trim();
+
+    // Validate message
+    if (!trimmedMessage || isSubmitting) {
+      return;
+    }
+
+    if (trimmedMessage.length < MESSAGE_MIN_LENGTH) {
+      alert(ERROR_MESSAGES.MESSAGE.MESSAGE_REQUIRED);
+      return;
+    }
+
+    if (trimmedMessage.length > MESSAGE_MAX_LENGTH) {
+      alert(ERROR_MESSAGES.MESSAGE.MESSAGE_TOO_LONG);
       return;
     }
 
@@ -27,7 +46,7 @@ export default function MessageForm({
     try {
       const messageId = await insertMessage(
         currentUserId,
-        message.trim(),
+        trimmedMessage,
         recipientId  // Pass recipient if provided (for owner sending to specific user)
       );
 
@@ -38,11 +57,11 @@ export default function MessageForm({
           onMessageSent();
         }
       } else {
-        alert("Failed to send message. Please try again.");
+        alert(ERROR_MESSAGES.MESSAGE.SEND_FAILED);
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("An error occurred while sending the message.");
+      alert(ERROR_MESSAGES.MESSAGE.SEND_ERROR);
     } finally {
       setIsSubmitting(false);
     }
@@ -55,7 +74,8 @@ export default function MessageForm({
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message..."
+          placeholder={UI_TEXT.MESSAGE.PLACEHOLDER}
+          maxLength={MESSAGE_MAX_LENGTH}
           className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={isSubmitting}
         />
@@ -64,7 +84,7 @@ export default function MessageForm({
           disabled={isSubmitting || !message.trim()}
           className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "Sending..." : "Send"}
+          {isSubmitting ? UI_TEXT.MESSAGE.SENDING : UI_TEXT.MESSAGE.SEND}
         </button>
       </div>
     </form>

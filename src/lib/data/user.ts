@@ -1,57 +1,58 @@
-import type { User } from "../types";
+import type { User, UserRow } from "../types";
 import { supabase } from "../supabase";
+import { transformUserRow, transformUserRows } from "../transformers";
+import { FRIEND_GROUP, ERROR_MESSAGES } from "../constants";
 
-export async function fetchUserByUsername(username: string) {
+export async function fetchUserByUsername(username: string): Promise<User> {
   const { data, error } = await supabase
     .from("user")
     .select("*")
-    .eq("username", username);
+    .eq("username", username)
+    .single();
+
   if (error) {
-    console.error("Error fetching data", error);
-    throw new Error("Failed to fetch user by username");
-  } else {
-    const user: User = {
-      id: data[0].id,
-      username: data[0].username,
-      from: data[0].from,
-      profilePic: data[0].profile_pic,
-      friendGroup: data[0].friend_group,
-    };
-    return user;
+    console.error(ERROR_MESSAGES.USER.FETCH_ERROR, error);
+    throw new Error(ERROR_MESSAGES.USER.FETCH_FAILED);
   }
+
+  return transformUserRow(data as UserRow);
 }
 
-export async function fetchUsersByGroup(group: string, username: string) {
-  console.log("username : ", username, "group : ", group);
-  console.log(typeof group);
-  let query = supabase
-    .from("user")
-    .select()
-    .or(`friend_group.eq.${group}, friend_group.eq.0`)
-    .neq("username", username);
+export async function fetchUsersByGroup(
+  group: string,
+  username: string
+): Promise<User[]> {
+  // If group is "0" (all/public group), fetch all users except current user
+  const isAllUsersGroup = group === FRIEND_GROUP.ALL;
 
-  if (group + "" === "0") {
-    query = supabase.from("user").select().neq("username", username);
+  let query = supabase.from("user").select().neq("username", username);
+
+  // If not fetching all users, filter by specific group or public group
+  if (!isAllUsersGroup) {
+    query = query.or(`friend_group.eq.${group},friend_group.eq.${FRIEND_GROUP.ALL}`);
   }
 
   const { data, error } = await query;
 
   if (error) {
-    console.error("Error fetching users by group", error);
-  } else {
-    return data as User[];
+    console.error(ERROR_MESSAGES.USER.FETCH_ERROR, error);
+    return [];
   }
+
+  return transformUserRows((data || []) as UserRow[]);
 }
 
-export async function getUser(username: string) {
-  const { data: user, error } = await supabase
+export async function getUser(username: string): Promise<UserRow> {
+  const { data, error } = await supabase
     .from("user")
     .select("*")
-    .eq("username", username);
+    .eq("username", username)
+    .single();
 
   if (error) {
-    console.error("Failed to fetch user", error);
-    throw new Error("Failed to fetch user.");
+    console.error(ERROR_MESSAGES.USER.FETCH_FAILED, error);
+    throw new Error(ERROR_MESSAGES.USER.FETCH_FAILED);
   }
-  return user[0];
+
+  return data as UserRow;
 }

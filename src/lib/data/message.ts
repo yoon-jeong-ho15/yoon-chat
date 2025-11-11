@@ -1,5 +1,7 @@
-import type { Message } from "../types";
+import type { Message, MessageViewRow } from "../types";
 import { supabase } from "../supabase";
+import { transformMessageViewRows } from "../transformers";
+import { ERROR_MESSAGES } from "../constants";
 
 /**
  * Get the owner user ID from environment variable
@@ -7,7 +9,7 @@ import { supabase } from "../supabase";
 export function getOwnerId(): string {
   const ownerId = import.meta.env.VITE_OWNER_USER_ID;
   if (!ownerId) {
-    console.error("VITE_OWNER_USER_ID is not set in environment variables");
+    console.error(ERROR_MESSAGES.ENV.OWNER_ID_NOT_SET);
     return "";
   }
   return ownerId;
@@ -43,26 +45,12 @@ export async function fetchAllMessages(): Promise<Message[]> {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Error fetching all messages:", error);
+    console.error(ERROR_MESSAGES.MESSAGE.FETCH_ERROR, error);
     return [];
   }
 
   // Return data from v_message view, transforming to nested structure
-  return (data || []).map((msg: any) => ({
-    id: msg.id,
-    author: {
-      id: msg.author_id,
-      username: msg.author_username,
-      profile_pic: msg.author_profile_pic,
-    },
-    recipient: {
-      id: msg.recipient_id,
-      username: msg.recipient_username,
-      profile_pic: msg.recipient_profile_pic,
-    },
-    message: msg.message,
-    created_at: msg.created_at,
-  }));
+  return transformMessageViewRows((data || []) as MessageViewRow[]);
 }
 
 /**
@@ -98,26 +86,12 @@ export async function fetchMessagesByUserId(
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Error fetching messages for user:", error);
+    console.error(ERROR_MESSAGES.MESSAGE.FETCH_ERROR, error);
     return [];
   }
 
   // Return data from v_message view, transforming to nested structure
-  return (data || []).map((msg: any) => ({
-    id: msg.id,
-    author: {
-      id: msg.author_id,
-      username: msg.author_username,
-      profile_pic: msg.author_profile_pic,
-    },
-    recipient: {
-      id: msg.recipient_id,
-      username: msg.recipient_username,
-      profile_pic: msg.recipient_profile_pic,
-    },
-    message: msg.message,
-    created_at: msg.created_at,
-  }));
+  return transformMessageViewRows((data || []) as MessageViewRow[]);
 }
 
 /**
@@ -142,7 +116,7 @@ export async function insertMessage(
 
   if (isOwner(authorId)) {
     if (!recipientId) {
-      console.error("Owner must specify recipient when sending message");
+      console.error(ERROR_MESSAGES.MESSAGE.OWNER_MUST_SPECIFY_RECIPIENT);
       return null;
     }
     finalRecipientId = recipientId;
