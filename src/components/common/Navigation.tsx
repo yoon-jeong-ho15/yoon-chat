@@ -1,9 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { motion } from "motion/react";
+
+const tabs = [
+  { title: "프로필", href: "/profile" },
+  { title: "메시지", href: "/message" },
+];
 
 export default function Navigation() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   if (!user || location.pathname === "/login") {
     return null;
@@ -13,46 +20,45 @@ export default function Navigation() {
     await logout();
   };
 
+  const selectedTab = tabs.find((tab) => tab.href === location.pathname);
+
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-bold text-blue-600">
-              Hello Friends
-            </Link>
-            <div className="flex space-x-4">
-              <Link
-                to="/profile"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  location.pathname === "/profile"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                프로필
-              </Link>
-              <Link
-                to="/message"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  location.pathname === "/message"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                메시지
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{user.username}</span>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
+    <nav className="flex h-12 mt-3 mx-6 justify-between">
+      <div className="flex w-6/12 items-center">
+        <Link to="/" className="text-xl font-bold text-blue-600">
+          Hello Friends
+        </Link>
+      </div>
+      <div
+        className="w-6/12 flex justify-around text-xl
+          border-gray-400 border-1 bg-gray-100
+          rounded-2xl font-[500] text-shadow-xs/10
+          shadow-lg font-mono"
+      >
+        <div className="flex flex-grow h-full items-center justify-around text-2xl">
+          {tabs.map((item) => (
+            <motion.button
+              key={item.title}
+              onClick={() => navigate(item.href)}
+              animate={{
+                backgroundColor: item === selectedTab ? "#000" : "transparent",
+                color: item === selectedTab ? "#fff" : "#000",
+              }}
+              transition={{ duration: 0.3 }}
+              className="relative rounded px-2 py-1 cursor-pointer border-none outline-none"
             >
-              로그아웃
-            </button>
-          </div>
+              <span className="z-10 bg-inherit">{item.title}</span>
+            </motion.button>
+          ))}
+        </div>
+        <div className="flex flex-row h-full w-fit border-l border-gray-500 bg-gray-100 items-center px-2 z-10 rounded-r-2xl gap-2">
+          <span className="text-sm text-gray-600">{user.username}</span>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
+          >
+            로그아웃
+          </button>
         </div>
       </div>
     </nav>
