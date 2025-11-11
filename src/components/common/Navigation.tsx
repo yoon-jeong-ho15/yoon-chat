@@ -9,6 +9,10 @@ export default function Navigation() {
     return null;
   }
 
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4">
@@ -43,7 +47,7 @@ export default function Navigation() {
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600">{user.username}</span>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
             >
               로그아웃

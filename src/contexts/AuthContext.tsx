@@ -1,88 +1,167 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { AuthUser } from "../lib/types";
-import { getUser } from "../lib/data/user";
+import { supabase } from "../lib/supabase";
 
 interface AuthContextType {
   user: AuthUser | null;
-  login: (username: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
+  supabaseUser: SupabaseUser | null;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (email: string, password: string, username: string, metadata?: Record<string, string>) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function comparePasswords(
-  dbPassword: number | string,
-  inputPassword: string
-): boolean {
-  if (typeof dbPassword === "number") {
-    return dbPassword === parseInt(inputPassword);
-  } else if (typeof dbPassword === "string") {
-    return dbPassword === inputPassword;
-  }
-  return false;
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in (from localStorage)
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSupabaseUser(session?.user ?? null);
+      if (session?.user) {
+        // Fetch user profile from database
+        fetchUserProfile(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSupabaseUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setUser(null);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const fetchUserProfile = async (userId: string) => {
     try {
-      // Validate input
-      if (!username || !password) {
-        return { success: false, error: "이름과 생년월일을 입력해주세요." };
+      const { data, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setUser(data as AuthUser);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      if (!email || !password) {
+        return { success: false, error: "이메일과 비밀번호를 입력해주세요." };
       }
 
-      if (password.length !== 6) {
-        return { success: false, error: "생년월일은 6자리로 입력해주세요." };
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          return { success: false, error: "이메일 또는 비밀번호가 올바르지 않습니다." };
+        }
+        return { success: false, error: error.message };
       }
 
-      if (!/^\d+$/.test(password)) {
-        return { success: false, error: "생년월일은 숫자만 입력해주세요." };
+      if (data.user) {
+        await fetchUserProfile(data.user.id);
+        return { success: true };
       }
 
-      // Fetch user from database
-      const fetchedUser = await getUser(username);
-
-      if (!fetchedUser) {
-        return { success: false, error: "존재하지 않는 사용자입니다." };
-      }
-
-      // Verify password
-      const passwordsMatch = comparePasswords(fetchedUser.password, password);
-      if (!passwordsMatch) {
-        return { success: false, error: "생년월일이 올바르지 않습니다." };
-      }
-
-      // Store user in state and localStorage
-      setUser(fetchedUser);
-      localStorage.setItem("user", JSON.stringify(fetchedUser));
-
-      return { success: true };
+      return { success: false, error: "로그인에 실패했습니다." };
     } catch (error) {
       console.error("Login error:", error);
       return { success: false, error: "로그인 중 오류가 발생했습니다." };
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+  const signup = async (
+    email: string,
+    password: string,
+    username: string,
+    metadata?: Record<string, string>
+  ) => {
+    try {
+      if (!email || !password || !username) {
+        return { success: false, error: "모든 필드를 입력해주세요." };
+      }
+
+      // Sign up with Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            ...metadata,
+          },
+        },
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      if (data.user) {
+        // Create user profile in database
+        const { error: profileError } = await supabase.from("user").insert({
+          id: data.user.id,
+          username,
+          from: metadata?.from || "0",
+          profile_pic: metadata?.profile_pic || "",
+          friend_group: metadata?.friend_group || "0",
+        });
+
+        if (profileError) {
+          console.error("Error creating user profile:", profileError);
+          return { success: false, error: "프로필 생성에 실패했습니다." };
+        }
+
+        return { success: true };
+      }
+
+      return { success: false, error: "회원가입에 실패했습니다." };
+    } catch (error) {
+      console.error("Signup error:", error);
+      return { success: false, error: "회원가입 중 오류가 발생했습니다." };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSupabaseUser(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, supabaseUser, login, signup, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

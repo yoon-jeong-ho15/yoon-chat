@@ -7,7 +7,7 @@ A real-time chat and profile application built with Vite + React + TypeScript.
 - 👤 **User Profile**: View user information and profile
 - 💬 **Real-time Chat**: 1-on-1 and group chat with real-time messaging
 - 🔔 **Notifications**: Unread message counts and notifications
-- 🔒 **Authentication**: Secure login system
+- 🔒 **Authentication**: Secure authentication with Supabase Auth (email/password sign-in and sign-up)
 
 ## Tech Stack
 
@@ -50,7 +50,16 @@ VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-4. Run the development server:
+4. Set up Supabase Authentication:
+   - Go to your Supabase project dashboard
+   - Navigate to **Authentication** > **Providers**
+   - Enable **Email** provider
+   - Configure email settings (optional: set up email templates)
+   - **Important**: Make sure the `user` table schema matches the auth requirements
+     - The `id` field should be a UUID and should match the Supabase Auth user ID
+     - Required fields: `id`, `username`, `from`, `profile_pic`, `friend_group`
+
+5. Run the development server:
 ```bash
 npm run dev
 ```
