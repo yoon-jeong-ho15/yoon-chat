@@ -1,4 +1,10 @@
-import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
 import { insertMessage } from "../../lib/data/message";
 import {
   MESSAGE_MAX_LENGTH,
@@ -16,7 +22,7 @@ interface MessageFormProps {
 export default function MessageForm({
   currentUserId,
   recipientId,
-  onMessageSent
+  onMessageSent,
 }: MessageFormProps) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +32,10 @@ export default function MessageForm({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        160
+      )}px`;
     }
   }, [message]);
 
@@ -56,7 +65,7 @@ export default function MessageForm({
       const messageId = await insertMessage(
         currentUserId,
         trimmedMessage,
-        recipientId  // Pass recipient if provided (for owner sending to specific user)
+        recipientId // Pass recipient if provided (for owner sending to specific user)
       );
 
       if (messageId) {
@@ -85,7 +94,10 @@ export default function MessageForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4 bg-gray-50">
+    <form
+      onSubmit={handleSubmit}
+      className="border-t border-gray-200 p-4 bg-gray-50"
+    >
       <div className="flex gap-3 items-end">
         <textarea
           ref={textareaRef}

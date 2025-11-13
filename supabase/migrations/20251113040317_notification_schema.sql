@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS notification (
   title VARCHAR(255) NOT NULL,
   content TEXT,
   related_user_id UUID REFERENCES "user"(id) ON DELETE SET NULL,
-  related_message_id UUID REFERENCES message(id) ON DELETE SET NULL,
+  related_message_id bigint REFERENCES message(id) ON DELETE SET NULL,
   is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   read_at TIMESTAMP WITH TIME ZONE
@@ -77,7 +77,7 @@ CREATE OR REPLACE FUNCTION create_notification(
   p_title VARCHAR(255),
   p_content TEXT DEFAULT NULL,
   p_related_user_id UUID DEFAULT NULL,
-  p_related_message_id UUID DEFAULT NULL
+  p_related_message_id bigint DEFAULT NULL
 )
 RETURNS UUID
 LANGUAGE plpgsql

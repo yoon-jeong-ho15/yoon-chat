@@ -127,7 +127,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       if (!email || !password) {
-        return { success: false, error: ERROR_MESSAGES.AUTH.EMAIL_PASSWORD_REQUIRED };
+        return {
+          success: false,
+          error: ERROR_MESSAGES.AUTH.EMAIL_PASSWORD_REQUIRED,
+        };
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -186,7 +189,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ) => {
     try {
       if (!email || !password || !username) {
-        return { success: false, error: ERROR_MESSAGES.AUTH.ALL_FIELDS_REQUIRED };
+        return {
+          success: false,
+          error: ERROR_MESSAGES.AUTH.ALL_FIELDS_REQUIRED,
+        };
       }
 
       // Sign up with Supabase Auth
@@ -210,14 +216,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { error: profileError } = await supabase.from("user").insert({
           id: data.user.id,
           username,
-          from: metadata?.from || DEFAULT_USER_FROM,
           profile_pic: metadata?.profile_pic || "",
-          friend_group: metadata?.friend_group || DEFAULT_FRIEND_GROUP,
         });
 
         if (profileError) {
-          console.error(ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED, profileError);
-          return { success: false, error: ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED };
+          console.error(
+            ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED,
+            profileError
+          );
+          return {
+            success: false,
+            error: ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED,
+          };
         }
 
         return { success: true };
