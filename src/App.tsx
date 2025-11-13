@@ -3,7 +3,6 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
-import OwnerDashboard from "./pages/OwnerDashboard";
 import Navigation from "./components/common/Navigation";
 import HomePage from "./pages/Home";
 
@@ -46,14 +45,6 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <MessagePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/owner"
-            element={
-              <ProtectedRoute>
-                <OwnerDashboard />
               </ProtectedRoute>
             }
           />
