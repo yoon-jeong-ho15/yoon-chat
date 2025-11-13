@@ -5,6 +5,7 @@
 
 // Polling intervals (in milliseconds)
 export const MESSAGE_POLLING_INTERVAL = 180_000; // 3 minutes
+export const NOTIFICATION_POLLING_INTERVAL = 30_000; // 30 seconds
 export const MINUTES_TO_MS = 60_000;
 
 // Time calculations
@@ -55,6 +56,13 @@ export const ERROR_MESSAGES = {
   USER: {
     FETCH_FAILED: "Failed to fetch user",
     FETCH_ERROR: "Error fetching user",
+  },
+  NOTIFICATION: {
+    FETCH_ERROR: "Error fetching notifications",
+    UPDATE_ERROR: "Error updating notification",
+    MARK_READ_ERROR: "Error marking notification as read",
+    MARK_ALL_READ_ERROR: "Error marking all notifications as read",
+    CREATE_ERROR: "Error creating notification",
   },
   ENV: {
     OWNER_ID_NOT_SET: "VITE_OWNER_USER_ID is not set in environment variables",
