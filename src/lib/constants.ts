@@ -48,7 +48,7 @@ export const ERROR_MESSAGES = {
   MESSAGE: {
     SEND_FAILED: "Failed to send message. Please try again.",
     SEND_ERROR: "An error occurred while sending the message.",
-    OWNER_MUST_SPECIFY_RECIPIENT: "Owner must specify recipient when sending message",
+    ADMIN_MUST_SPECIFY_RECIPIENT: "Admin must specify recipient when sending message",
     FETCH_ERROR: "Error fetching messages",
     MESSAGE_REQUIRED: "메시지를 입력해주세요.",
     MESSAGE_TOO_LONG: `메시지는 ${MESSAGE_MAX_LENGTH}자를 초과할 수 없습니다.`,
@@ -65,7 +65,7 @@ export const ERROR_MESSAGES = {
     CREATE_ERROR: "Error creating notification",
   },
   ENV: {
-    OWNER_ID_NOT_SET: "VITE_OWNER_USER_ID is not set in environment variables",
+    ADMIN_ID_NOT_SET: "VITE_ADMIN_USER_ID is not set in environment variables",
   },
 } as const;
 

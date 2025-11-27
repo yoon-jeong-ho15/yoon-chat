@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { isOwner } from "../../lib/data/message";
+import { isAdmin } from "../../lib/data/message";
 
 export default function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -17,7 +17,7 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
     return <Navigate to="/login" replace />;
   }
 
-  if (!isOwner(user.id)) {
+  if (!isAdmin(user.id)) {
     return <Navigate to="/" replace />;
   }
 

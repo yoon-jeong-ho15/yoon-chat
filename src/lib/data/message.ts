@@ -4,26 +4,26 @@ import { transformMessageViewRows } from "../transformers";
 import { ERROR_MESSAGES } from "../constants";
 
 /**
- * Get the owner user ID from environment variable
+ * Get the admin user ID from environment variable
  */
-export function getOwnerId(): string {
-  const ownerId = import.meta.env.VITE_OWNER_USER_ID;
-  if (!ownerId) {
-    console.error(ERROR_MESSAGES.ENV.OWNER_ID_NOT_SET);
+export function getAdminId(): string {
+  const adminId = import.meta.env.VITE_ADMIN_USER_ID;
+  if (!adminId) {
+    console.error(ERROR_MESSAGES.ENV.ADMIN_ID_NOT_SET);
     return "";
   }
-  return ownerId;
+  return adminId;
 }
 
 /**
- * Check if a user is the owner
+ * Check if a user is the admin
  */
-export function isOwner(userId: string): boolean {
-  return userId === getOwnerId();
+export function isAdmin(userId: string): boolean {
+  return userId === getAdminId();
 }
 
 /**
- * Fetch all messages with user information (for owner)
+ * Fetch all messages with user information (for admin)
  * Joins with user table to get username and profile_pic
  */
 export async function fetchAllMessages(): Promise<Message[]> {
@@ -55,16 +55,16 @@ export async function fetchAllMessages(): Promise<Message[]> {
 
 /**
  * Fetch messages for a specific user conversation
- * Returns messages between the user and the owner
+ * Returns messages between the user and the admin
  */
 export async function fetchMessagesByUserId(
   userId: string
 ): Promise<Message[]> {
-  const ownerId = getOwnerId();
+  const adminId = getAdminId();
 
   // Get messages where:
-  // - User sent to owner (author=user, recipient=owner)
-  // - Owner sent to user (author=owner, recipient=user)
+  // - User sent to admin (author=user, recipient=admin)
+  // - Admin sent to user (author=admin, recipient=user)
   const { data, error } = await supabase
     .from("v_message")
     .select(
@@ -81,7 +81,7 @@ export async function fetchMessagesByUserId(
     `
     )
     .or(
-      `and(author_id.eq.${userId},recipient_id.eq.${ownerId}),and(author_id.eq.${ownerId},recipient_id.eq.${userId})`
+      `and(author_id.eq.${userId},recipient_id.eq.${adminId}),and(author_id.eq.${adminId},recipient_id.eq.${userId})`
     )
     .order("created_at", { ascending: true });
 
@@ -99,30 +99,30 @@ export async function fetchMessagesByUserId(
  * @param authorId - The user sending the message
  * @param message - The message content
  * @param recipientId - Optional recipient ID. If not provided:
- *                      - Regular users always send to owner
- *                      - Owner must specify recipient
+ *                      - Regular users always send to admin
+ *                      - Admin must specify recipient
  */
 export async function insertMessage(
   authorId: string,
   message: string,
   recipientId?: string
 ): Promise<string | null> {
-  const ownerId = getOwnerId();
+  const adminId = getAdminId();
 
   // Determine recipient:
-  // - If author is owner, recipient must be provided
-  // - If author is regular user, recipient is always owner
+  // - If author is admin, recipient must be provided
+  // - If author is regular user, recipient is always admin
   let finalRecipientId: string;
 
-  if (isOwner(authorId)) {
+  if (isAdmin(authorId)) {
     if (!recipientId) {
-      console.error(ERROR_MESSAGES.MESSAGE.OWNER_MUST_SPECIFY_RECIPIENT);
+      console.error(ERROR_MESSAGES.MESSAGE.ADMIN_MUST_SPECIFY_RECIPIENT);
       return null;
     }
     finalRecipientId = recipientId;
   } else {
-    // Regular user always sends to owner
-    finalRecipientId = ownerId;
+    // Regular user always sends to admin
+    finalRecipientId = adminId;
   }
 
   const { data, error } = await supabase
@@ -144,7 +144,7 @@ export async function insertMessage(
 }
 
 /**
- * Get messages grouped by user (for owner view)
+ * Get messages grouped by user (for admin view)
  * Returns a map of user_id -> messages
  */
 export async function fetchMessagesGroupedByUser(): Promise<

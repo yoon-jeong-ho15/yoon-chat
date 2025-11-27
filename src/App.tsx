@@ -4,8 +4,8 @@ import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
 import NotificationsPage from "./pages/Notifications";
-import OwnerMessagePage from "./pages/OwnerMessage";
-import OwnerDashboard from "./pages/OwnerDashboard";
+import AdminMessagePage from "./pages/AdminMessage";
+import AdminDashboard from "./pages/AdminDashboard";
 import Navigation from "./components/common/Navigation";
 import AdminRoute from "./components/common/AdminRoute";
 import HomePage from "./pages/Home";
@@ -72,7 +72,7 @@ function AppRoutes() {
             path="/admin/message"
             element={
               <AdminRoute>
-                <OwnerMessagePage />
+                <AdminMessagePage />
               </AdminRoute>
             }
           />
@@ -80,7 +80,7 @@ function AppRoutes() {
             path="/admin/dashboard"
             element={
               <AdminRoute>
-                <OwnerDashboard />
+                <AdminDashboard />
               </AdminRoute>
             }
           />

@@ -65,7 +65,7 @@ export default function MessageForm({
       const messageId = await insertMessage(
         currentUserId,
         trimmedMessage,
-        recipientId // Pass recipient if provided (for owner sending to specific user)
+        recipientId // Pass recipient if provided (for admin sending to specific user)
       );
 
       if (messageId) {

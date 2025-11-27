@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { getUnreadNotificationCount } from "../../lib/data/notification";
 import { NOTIFICATION_POLLING_INTERVAL } from "../../lib/constants";
-import { isOwner } from "../../lib/data/message";
+import { isAdmin } from "../../lib/data/message";
 
 const regularUserTabs = [
   { title: "프로필", href: "/profile", icon: UserCircleIcon },
@@ -60,7 +60,7 @@ export default function Navigation() {
   };
 
   // Determine which tabs to show based on user role
-  const tabs = user && isOwner(user.id) ? adminTabs : regularUserTabs;
+  const tabs = user && isAdmin(user.id) ? adminTabs : regularUserTabs;
   const selectedTab = tabs.find((tab) => tab.href === location.pathname);
 
   return (

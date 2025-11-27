@@ -9,7 +9,7 @@ import type { Message } from "../../lib/types";
 import {
   fetchMessagesByUserId,
   fetchAllMessages,
-  isOwner,
+  isAdmin,
 } from "../../lib/data/message";
 import { MESSAGE_POLLING_INTERVAL, UI_TEXT } from "../../lib/constants";
 import MessageItem from "./MessageItem";
@@ -31,11 +31,11 @@ const MessageList = forwardRef<MessageListRef, MessageListProps>(
     const loadMessages = async () => {
       let fetchedMessages: Message[];
 
-      if (isOwner(currentUserId)) {
-        // Owner sees all messages
+      if (isAdmin(currentUserId)) {
+        // Admin sees all messages
         fetchedMessages = await fetchAllMessages();
       } else {
-        // Regular user sees only their conversation with owner
+        // Regular user sees only their conversation with admin
         fetchedMessages = await fetchMessagesByUserId(currentUserId);
       }
 

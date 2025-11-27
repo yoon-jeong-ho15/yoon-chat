@@ -4,13 +4,13 @@ import { useAuth } from "../contexts/AuthContext";
 import MessageForm from "../components/message/MessageForm";
 import MessageItem from "../components/message/MessageItem";
 import UserListItem from "../components/message/UserListItem";
-import { isOwner, fetchMessagesByUserId } from "../lib/data/message";
+import { isAdmin, fetchMessagesByUserId } from "../lib/data/message";
 import { fetchUsersByGroup } from "../lib/data/user";
 import { FRIEND_GROUP } from "../lib/constants";
 import type { Message, User } from "../lib/types";
 import GradientContainer from "../components/common/GradientContainer";
 
-export default function OwnerMessagePage() {
+export default function AdminMessagePage() {
   const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -20,8 +20,8 @@ export default function OwnerMessagePage() {
   );
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if current user is owner
-  if (!user || !isOwner(user.id)) {
+  // Check if current user is admin
+  if (!user || !isAdmin(user.id)) {
     return <Navigate to="/" replace />;
   }
 
