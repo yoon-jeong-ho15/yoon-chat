@@ -5,14 +5,23 @@ import {
   UserCircleIcon,
   ChatBubbleLeftRightIcon,
   BellIcon,
+  ChartBarIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { getUnreadNotificationCount } from "../../lib/data/notification";
 import { NOTIFICATION_POLLING_INTERVAL } from "../../lib/constants";
+import { isOwner } from "../../lib/data/message";
 
-const tabs = [
+const regularUserTabs = [
   { title: "프로필", href: "/profile", icon: UserCircleIcon },
   { title: "메시지", href: "/message", icon: ChatBubbleLeftRightIcon },
+];
+
+const adminTabs = [
+  { title: "프로필", href: "/profile", icon: UserCircleIcon },
+  { title: "메시지", href: "/admin/message", icon: ChatBubbleLeftRightIcon },
+  { title: "대시보드", href: "/admin/dashboard", icon: UsersIcon },
 ];
 
 export default function Navigation() {
@@ -50,6 +59,8 @@ export default function Navigation() {
     await logout();
   };
 
+  // Determine which tabs to show based on user role
+  const tabs = user && isOwner(user.id) ? adminTabs : regularUserTabs;
   const selectedTab = tabs.find((tab) => tab.href === location.pathname);
 
   return (

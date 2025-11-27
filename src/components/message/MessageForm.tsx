@@ -107,7 +107,14 @@ export default function MessageForm({
           placeholder={UI_TEXT.MESSAGE.PLACEHOLDER}
           maxLength={MESSAGE_MAX_LENGTH}
           rows={1}
-          className="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none overflow-y-auto"
+          className="
+          flex-1 border border-gray-300 rounded-xl
+          px-4 py-3
+          focus:outline-none focus:ring-2
+          focus:ring-blue-400 focus:border-transparent
+          resize-none overflow-y-auto
+          scrollbar-on-scroll
+          "
           style={{ maxHeight: "160px" }}
           disabled={isSubmitting}
         />

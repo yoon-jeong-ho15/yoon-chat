@@ -4,7 +4,10 @@ import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/Profile";
 import MessagePage from "./pages/Message";
 import NotificationsPage from "./pages/Notifications";
+import OwnerMessagePage from "./pages/OwnerMessage";
+import OwnerDashboard from "./pages/OwnerDashboard";
 import Navigation from "./components/common/Navigation";
+import AdminRoute from "./components/common/AdminRoute";
 import HomePage from "./pages/Home";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -62,6 +65,23 @@ function AppRoutes() {
               <ProtectedRoute>
                 <NotificationsPage />
               </ProtectedRoute>
+            }
+          />
+          {/* Admin-only routes */}
+          <Route
+            path="/admin/message"
+            element={
+              <AdminRoute>
+                <OwnerMessagePage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <OwnerDashboard />
+              </AdminRoute>
             }
           />
           <Route path="/" element={<Navigate to="/profile" replace />} />
