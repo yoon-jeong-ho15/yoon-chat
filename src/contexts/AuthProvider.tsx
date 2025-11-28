@@ -1,37 +1,14 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { AuthUser } from "../lib/types";
 import { supabase } from "../lib/supabase";
-import {
-  DEFAULT_USER_FROM,
-  DEFAULT_FRIEND_GROUP,
-  ERROR_MESSAGES,
-} from "../lib/constants";
+import { ERROR_MESSAGES } from "../lib/constants";
 import {
   generateUsernameFromOAuthUser,
   isInvalidCredentialsError,
 } from "../lib/utils/auth";
-
-interface AuthContextType {
-  user: AuthUser | null;
-  supabaseUser: SupabaseUser | null;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{ success: boolean; error?: string }>;
-  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
-  signup: (
-    email: string,
-    password: string,
-    username: string,
-    metadata?: Record<string, string>
-  ) => Promise<{ success: boolean; error?: string }>;
-  logout: () => Promise<void>;
-  isLoading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -165,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/profile`,
+          redirectTo: `${window.location.origin}/`,
         },
       });
 
@@ -265,12 +242,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 }
