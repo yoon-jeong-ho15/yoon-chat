@@ -3,24 +3,22 @@ import type { ReactNode } from "react";
 interface GradientContainerProps {
   children: ReactNode;
   className?: string;
-  innerClassName?: string;
+  outerClassName?: string;
 }
 
 export default function GradientContainer({
   children,
-  className = "",
-  innerClassName = "flex flex-col justify-between",
+  className,
+  outerClassName,
 }: GradientContainerProps) {
   return (
     <div
       className={`
-        w-full flex rounded-2xl shadow p-1.5 bg-linear-to-r
-         from-blue-400 to-indigo-400 
-         ${className}
-         `}
+        rounded-2xl shadow bg-linear-to-r
+         from-blue-400 to-indigo-400 p-1.5 ${outerClassName}`}
     >
       <div
-        className={`w-full h-full bg-white rounded-xl overflow-hidden ${innerClassName} shadow`}
+        className={`bg-white rounded-xl overflow-hidden ${className} shadow`}
       >
         {children}
       </div>

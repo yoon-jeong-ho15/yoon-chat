@@ -69,7 +69,7 @@ const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }, [messages]);
 
     return (
-      <div className="grow overflow-y-scroll pt-2" ref={messageDivRef}>
+      <div className="grow overflow-y-scroll pt-2 w-full" ref={messageDivRef}>
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-gray-500">
             <p>{UI_TEXT.MESSAGE.NO_MESSAGES}</p>

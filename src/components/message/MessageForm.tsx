@@ -96,7 +96,7 @@ export default function MessageForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-t border-gray-200 p-4 bg-gray-50"
+      className="border-t border-gray-200 p-4 bg-gray-50 w-full"
     >
       <div className="flex gap-3 items-end">
         <textarea
