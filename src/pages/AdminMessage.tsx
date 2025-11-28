@@ -1,12 +1,11 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/useAuth";
 import MessageForm from "../components/message/MessageForm";
 import MessageItem from "../components/message/MessageItem";
 import UserListItem from "../components/message/UserListItem";
 import { isAdmin, fetchMessagesByUserId } from "../lib/data/message";
 import { fetchUsersByGroup } from "../lib/data/user";
-import { FRIEND_GROUP } from "../lib/constants";
 import type { Message, User } from "../lib/types";
 import GradientContainer from "../components/common/GradientContainer";
 
@@ -31,7 +30,7 @@ export default function AdminMessagePage() {
 
   const loadUsers = async () => {
     setIsLoading(true);
-    const allUsers = await fetchUsersByGroup(FRIEND_GROUP.ALL, user!.username);
+    const allUsers = await fetchUsersByGroup(user!.username);
     setUsers(allUsers);
 
     // Load message count for each user
@@ -104,7 +103,7 @@ export default function AdminMessagePage() {
       </div>
 
       {/* Messages - Right Side */}
-      <GradientContainer innerClassName="flex">
+      <GradientContainer>
         <div className="flex-1 flex flex-col">
           {selectedUser ? (
             <>

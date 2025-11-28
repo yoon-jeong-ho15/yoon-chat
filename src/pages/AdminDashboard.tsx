@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/useAuth";
 import { isAdmin } from "../lib/data/message";
 import { fetchUsersWithAuthLogs } from "../lib/data/userActivity";
 import type { User } from "../lib/types";

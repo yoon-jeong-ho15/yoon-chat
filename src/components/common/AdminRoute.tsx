@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import { isAdmin } from "../../lib/data/message";
 
 export default function AdminRoute({ children }: { children: React.ReactNode }) {
