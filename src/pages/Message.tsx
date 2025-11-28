@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { useAuth } from "../contexts/useAuth";
-import type { User } from "../lib/types";
 import MessageList, {
   type MessageListRef,
 } from "../components/message/MessageList";
@@ -22,14 +21,6 @@ export default function MessagePage() {
     );
   }
 
-  const userForDisplay: User = {
-    id: user.id,
-    username: user.username,
-    profilePic: user.profile_pic,
-    createdAt: user.created_at,
-    updatedAt: user.updated_at,
-  };
-
   // Refresh messages after sending
   const handleMessageSent = () => {
     // Trigger a reload of messages without full page reload
@@ -39,8 +30,8 @@ export default function MessagePage() {
   return (
     <div className="flex mt-5 mx-8 flex-grow space-x-4 h-full">
       <GrayContainer className="flex flex-col p-2">
-        <UserProfile user={userForDisplay} />
-        <UserInfo user={userForDisplay} />
+        <UserProfile user={user} />
+        <UserInfo user={user} />
       </GrayContainer>
 
       <GradientContainer

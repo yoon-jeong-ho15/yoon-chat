@@ -1,17 +1,11 @@
-export type AuthUser = {
-  id: string;
-  username: string;
-  profile_pic: string;
-  created_at: string;
-  updated_at: string;
-};
-
 export type User = {
   id: string;
   username: string;
   profilePic: string;
-  createdAt : string;
-  updatedAt : string;
+  email: string;
+  provider: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // Database view response type for v_message
@@ -33,6 +27,8 @@ export type UserRow = {
   id: string;
   username: string;
   profile_pic: string;
+  email: string;
+  provider: string;
   created_at: string;
   updated_at: string;
 };

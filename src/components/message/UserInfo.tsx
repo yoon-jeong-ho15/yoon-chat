@@ -12,9 +12,8 @@ export default function UserInfo({ user }: UserInfoProps) {
       </div>
 
       <div className="space-y-3">
-        <InfoRow label="Username" value={user.username} />
-        <InfoRow label="User ID" value={user.id} />
-        <InfoRow label="Joined" value={user.createdAt} />
+        <InfoRow label="이름" value={user.username} />
+        <InfoRow label="가입일" value={user.createdAt} />
       </div>
     </div>
   );

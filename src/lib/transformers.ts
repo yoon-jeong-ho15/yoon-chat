@@ -51,6 +51,8 @@ export function transformUserRow(row: UserRow): User {
     id: row.id,
     username: row.username,
     profilePic: row.profile_pic,
+    email: row.email,
+    provider: row.provider,
     createdAt: row.created_at,
     updatedAt: row.updated_at
   };

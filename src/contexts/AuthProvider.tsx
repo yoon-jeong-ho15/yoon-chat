@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import type { AuthUser } from "../lib/types";
+import type { User, UserRow } from "../lib/types";
 import { supabase } from "../lib/supabase";
 import { ERROR_MESSAGES } from "../lib/constants";
 import {
   generateUsernameFromOAuthUser,
   isInvalidCredentialsError,
 } from "../lib/utils/auth";
+import { transformUserRow } from "../lib/transformers";
 import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -54,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data) {
-        setUser(data as AuthUser);
+        setUser(transformUserRow(data as UserRow));
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -73,10 +74,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (data) {
-        setUser(data as AuthUser);
+        setUser(transformUserRow(data as UserRow));
       } else if (error) {
         // If profile doesn't exist, create one for OAuth users
         const username = generateUsernameFromOAuthUser(supabaseUser);
+        const provider = supabaseUser.app_metadata?.provider || "email";
 
         const { data: newProfile, error: insertError } = await supabase
           .from("user")
@@ -84,6 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             id: supabaseUser.id,
             username,
             profile_pic: supabaseUser.user_metadata?.avatar_url || "",
+            email: supabaseUser.email || "",
+            provider,
           })
           .select()
           .single();
@@ -91,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (insertError) {
           console.error(ERROR_MESSAGES.AUTH.PROFILE_CREATE_FAILED, insertError);
         } else if (newProfile) {
-          setUser(newProfile as AuthUser);
+          setUser(transformUserRow(newProfile as UserRow));
         }
       }
     } catch (error) {
@@ -194,6 +198,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           id: data.user.id,
           username,
           profile_pic: metadata?.profile_pic || "",
+          email: data.user.email || "",
+          provider: "email",
         });
 
         if (profileError) {
