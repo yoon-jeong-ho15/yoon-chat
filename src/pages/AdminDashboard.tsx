@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/useAuth";
 import { isAdmin } from "../lib/data/message";
 import { fetchUsersWithAuthLogs } from "../lib/data/userActivity";
-import type { User } from "../lib/types";
+import type { User } from "../types/user";
 import { Navigate } from "react-router-dom";
 import UserDetailModal from "../components/admin/UserDetailModal";
 
@@ -31,8 +31,7 @@ export default function AdminDashboard() {
 
   const loadUsers = async () => {
     setIsLoading(true);
-    const { users: allUsers, auditLogs: logs } =
-      await fetchUsersWithAuthLogs();
+    const { users: allUsers, auditLogs: logs } = await fetchUsersWithAuthLogs();
     setUsers(allUsers);
     setAuditLogs(logs);
     setIsLoading(false);
@@ -45,8 +44,7 @@ export default function AdminDashboard() {
   const getUserLoginCount = (userId: string) => {
     return auditLogs.filter(
       (log) =>
-        (log.payload?.user_id === userId ||
-          log.payload?.actor_id === userId) &&
+        (log.payload?.user_id === userId || log.payload?.actor_id === userId) &&
         log.payload?.action === "user_signedin"
     ).length;
   };
@@ -54,8 +52,7 @@ export default function AdminDashboard() {
   const getLastLoginDate = (userId: string) => {
     const loginLogs = auditLogs.filter(
       (log) =>
-        (log.payload?.user_id === userId ||
-          log.payload?.actor_id === userId) &&
+        (log.payload?.user_id === userId || log.payload?.actor_id === userId) &&
         log.payload?.action === "user_signedin"
     );
     return loginLogs.length > 0 ? loginLogs[0].created_at : null;

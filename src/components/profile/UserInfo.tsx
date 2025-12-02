@@ -1,19 +1,18 @@
-import type { User } from "../../lib/types";
+import type { User } from "../../types/user";
 
-interface UserInfoProps {
-  user: User;
-}
-
-export default function UserInfo({ user }: UserInfoProps) {
+export default function UserInfo({ user }: { user: User }) {
   return (
-    <div className="rounded-lg p-6 space-y-4 grow">
+    <div className="rounded-lg p-6 space-y-4">
       <div className="border-b pb-4">
         <h2 className="text-2xl font-bold text-gray-800">User Information</h2>
       </div>
 
       <div className="space-y-3">
         <InfoRow label="이름" value={user.username} />
-        <InfoRow label="가입일" value={user.createdAt} />
+        <InfoRow
+          label="가입일"
+          value={new Date(user.createdAt).toLocaleString()}
+        />
       </div>
     </div>
   );

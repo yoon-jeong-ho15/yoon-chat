@@ -1,5 +1,5 @@
-import type { Message } from "../../lib/types";
-import { NoProfile } from "../common/Icon";
+import type { Message } from "../../types/message";
+import { NoProfile } from "../../assets/Icon";
 import { UI_TEXT } from "../../lib/constants";
 
 interface MessageItemProps {
@@ -27,7 +27,7 @@ export default function MessageItem({ message, isMe }: MessageItemProps) {
               className="w-12 h-12 rounded-full bg-white"
             />
           ) : (
-            <NoProfile size="md" />
+            <NoProfile className="size-10" />
           )}
           <span className="text-xs mt-1">
             {message.author.username || UI_TEXT.AUTH.UNKNOWN_USER}

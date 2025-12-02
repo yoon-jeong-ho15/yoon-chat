@@ -14,14 +14,10 @@ export default function GradientContainer({
   return (
     <div
       className={`
-        rounded-2xl shadow bg-linear-to-r
-         from-blue-400 to-indigo-400 p-1.5 ${outerClassName}`}
+        shadow bg-linear-to-r
+         from-blue-400 to-indigo-400 ${outerClassName}`}
     >
-      <div
-        className={`bg-white rounded-xl overflow-hidden ${className} shadow`}
-      >
-        {children}
-      </div>
+      <div className={`bg-white ${className}`}>{children}</div>
     </div>
   );
 }

@@ -3,10 +3,11 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import MessageForm from "../components/message/MessageForm";
 import MessageItem from "../components/message/MessageItem";
-import UserListItem from "../components/message/UserListItem";
+import UserListItem from "../components/profile/UserListItem";
 import { isAdmin, fetchMessagesByUserId } from "../lib/data/message";
 import { fetchUsersByGroup } from "../lib/data/user";
-import type { Message, User } from "../lib/types";
+import type { User } from "../types/user";
+import type { Message } from "../types/message";
 import GradientContainer from "../components/common/GradientContainer";
 
 export default function AdminMessagePage() {

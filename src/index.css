@@ -54,3 +54,33 @@
     scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
   }
 }
+
+@keyframes flipIn {
+  0% {
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes flipOut {
+  0% {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: rotateX(-90deg);
+  }
+}
+
+.flip-in {
+  animation: flipIn 0.1s forwards;
+}
+
+.flip-out {
+  animation: flipOut 0.1s forwards;
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import type { User, UserRow } from "../lib/types";
+import type { User, UserRow } from "../types/user";
 import { supabase } from "../lib/supabase";
 import { ERROR_MESSAGES } from "../lib/constants";
 import {
