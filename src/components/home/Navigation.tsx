@@ -62,6 +62,7 @@ export default function Navigation() {
               }
             }}
             onMouseEnter={() => setText(item.headerText || "")}
+            onMouseLeave={() => setText("")}
             className="
               px-3 py-1 cursor-pointer border-none 
               outline-none flex items-center gap-2
