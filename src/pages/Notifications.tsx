@@ -5,7 +5,7 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from "../lib/data/notification";
-import type { Notification } from "../lib/types";
+import type { Notification } from "../types/notification";
 import { motion } from "motion/react";
 import { CheckIcon, BellIcon } from "@heroicons/react/24/outline";
 
@@ -123,7 +123,11 @@ export default function Notifications() {
               className={`
                 bg-white rounded-xl shadow-sm p-4 cursor-pointer
                 transition-all hover:shadow-md
-                ${!notification.isRead ? "border-l-4 border-blue-500 bg-blue-50" : ""}
+                ${
+                  !notification.isRead
+                    ? "border-l-4 border-blue-500 bg-blue-50"
+                    : ""
+                }
               `}
               onClick={() => {
                 if (!notification.isRead) {
@@ -136,9 +140,7 @@ export default function Notifications() {
                   <div className="flex items-center gap-2 mb-1">
                     <h3
                       className={`text-base font-semibold ${
-                        !notification.isRead
-                          ? "text-gray-900"
-                          : "text-gray-600"
+                        !notification.isRead ? "text-gray-900" : "text-gray-600"
                       }`}
                     >
                       {notification.title}

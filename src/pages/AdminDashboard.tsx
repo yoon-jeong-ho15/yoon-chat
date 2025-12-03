@@ -8,7 +8,12 @@ import UserDetailModal from "../components/admin/UserDetailModal";
 
 type AuditLogEntry = {
   id: string;
-  payload: any;
+  payload: {
+    action?: string;
+    user_id?: string;
+    actor_id?: string;
+    [key: string]: unknown;
+  };
   created_at: string;
   ip_address: string;
 };
@@ -20,14 +25,14 @@ export default function AdminDashboard() {
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
   // Check if current user is admin
   if (!user || !isAdmin(user.id)) {
     return <Navigate to="/" replace />;
   }
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -125,13 +130,7 @@ export default function AdminDashboard() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(
-                    users.find((user) => user.id === u.id)?.from
-                      ? new Date(
-                          parseInt(u.from.toString()) * 1000
-                        ).toISOString()
-                      : new Date().toISOString()
-                  )}
+                  {u.createdAt ? formatDate(u.createdAt) : "N/A"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {getLastLoginDate(u.id)

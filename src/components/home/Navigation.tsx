@@ -5,7 +5,7 @@ import { useHeaderStore } from "../../stores/headerStore";
 
 type TabItem = {
   title: string;
-  icon: React.ForwardRefExoticComponent<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   href?: string;
   modalKey?: ModalType;
   headerText?: string;

@@ -3,7 +3,12 @@ import type { User } from "../../types/user";
 
 type AuditLogEntry = {
   id: string;
-  payload: any;
+  payload: {
+    action?: string;
+    user_id?: string;
+    actor_id?: string;
+    [key: string]: unknown;
+  };
   created_at: string;
   ip_address: string;
 };
