@@ -29,7 +29,7 @@ export default function Modal({
         onMinimize={onMinimize}
       />
 
-      <div className={`${className} ${isMinimized ? "h-0 p-0" : "h-auto p-2"}`}>
+      <div className={`${className} ${isMinimized ? "h-0 p-0" : "p-2"}`}>
         {children}
       </div>
     </div>

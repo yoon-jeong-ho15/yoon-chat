@@ -1,3 +1,4 @@
+import { NoProfile } from "../../assets/Icon";
 import type { User } from "../../types/user";
 
 interface UserListProps {
@@ -11,10 +12,10 @@ export default function UserList(props: UserListProps) {
   const { users, selectedUser, messageCount, handleUserClick } = props;
   return (
     <div
-      className="w-1/3 border-gray-400 border bg-gray-100
-                rounded-2xl font-[500] shadow-lg"
+      className="w-70 h-full border-gray-400 border bg-gray-100
+                rounded-xl shadow-lg"
     >
-      <div className="p-4 border-b border-gray-400">
+      <div className="px-4 py-3 border-b border-gray-400">
         <h2 className="text-xl font-bold">전체 사용자 목록</h2>
         <p className="text-sm mt-1">총 {users.length}명의 사용자</p>
       </div>
@@ -49,18 +50,23 @@ function UserListItem({
   return (
     <button
       onClick={() => onClick(user)}
-      className={`w-full p-4 text-left hover:bg-gray-50 transition-colors ${
+      className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
         isSelected ? "bg-blue-100" : ""
       }`}
     >
       <div className="flex items-center gap-3">
-        <img
-          src={user.profilePic}
-          alt={user.username}
-          className="w-12 h-12 rounded-full object-cover"
-        />
+        {user.profilePic ? (
+          <img
+            src={user.profilePic}
+            alt={user.username}
+            className="size-10 rounded-full object-cover"
+          />
+        ) : (
+          <NoProfile className="size-10" />
+        )}
+
         <div className="flex-1">
-          <div className="font-semibold text-gray-900">{user.username}</div>
+          <div className="text-gray-900">{user.username}</div>
           <div className="text-sm text-gray-500">메시지 {messageCount}개</div>
         </div>
         {isSelected && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}

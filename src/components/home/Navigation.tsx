@@ -19,7 +19,7 @@ const tabs: TabItem[] = [
     headerText: "저와 대화를 나눌 수 있습니다.",
   },
   {
-    title: "트랙커",
+    title: "트래커",
     modalKey: "tracker",
     icon: FireIcon,
     headerText: "운동을 기록해보세요",
@@ -53,9 +53,9 @@ export default function Navigation() {
               px-3 py-1 cursor-pointer border-none 
               outline-none flex items-center gap-2
               rounded-full
-              transition-colors hover:bg-gray-200"
+              transition-colors hover:bg-gray-200 hover:font-semibold"
           >
-            <Icon className="size-7" />
+            <Icon className="size-9" />
             <span className="text-sm">{item.title}</span>
           </button>
         );

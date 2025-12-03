@@ -11,7 +11,7 @@ interface MessageListProps {
 export default function MessageList(props: MessageListProps) {
   const { messages, currentUserId, messageDivRef } = props;
   return (
-    <div className="grow overflow-y-scroll pt-2 w-full" ref={messageDivRef}>
+    <div className="flex-1 overflow-y-scroll pt-2 w-full" ref={messageDivRef}>
       {messages.length === 0 ? (
         <div className="flex items-center justify-center h-full text-gray-500">
           <p>{UI_TEXT.MESSAGE.NO_MESSAGES}</p>

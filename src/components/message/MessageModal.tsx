@@ -38,6 +38,7 @@ export function UserMessageModal() {
       onClose={() => closeModal("message")}
       onMinimize={() => toggleMinimize("message")}
       title="메시지"
+      className="flex flex-col h-160 w-110"
     >
       <MessageList {...messageListProps} currentUserId={user.id} />
       <MessageForm {...messageFormProps} />
@@ -64,7 +65,7 @@ export function AdminMessageModal() {
       onClose={() => closeModal("message")}
       onMinimize={() => toggleMinimize("message")}
       title="메시지"
-      className="flex"
+      className="flex h-160 w-180"
     >
       <UserList {...userListProps} />
 
