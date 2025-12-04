@@ -12,7 +12,7 @@ export default function ModalTop({
   onMinimize,
 }: ModalTopProps) {
   return (
-    <div className="flex items-center bg-gray-200 rounded-t-lg">
+    <div className="flex items-center bg-gray-100 rounded-t-lg">
       <button
         id="tracker-close"
         className="

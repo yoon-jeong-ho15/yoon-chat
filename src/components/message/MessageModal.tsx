@@ -3,7 +3,7 @@ import { useMessage } from "../../hooks/message/useMessage";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 import Modal from "../modal/Modal";
-import { useModalStore } from "../../stores/modalStore";
+import { useModal, useModalStore } from "../../stores/modalStore";
 import { isAdmin } from "../../utils/user";
 import UserList from "./UserList";
 import { useAdminMessage } from "../../hooks/message/useAdminMessage";
@@ -18,12 +18,7 @@ export default function MessageModal() {
 
 export function UserMessageModal() {
   const { user } = useAuth();
-  const isOpen = useModalStore((state) => state.modals.message.isOpen);
-  const isMinimized = useModalStore(
-    (state) => state.modals.message.isMinimized
-  );
-  const closeModal = useModalStore((state) => state.closeModal);
-  const toggleMinimize = useModalStore((state) => state.toggleMinimize);
+  const { isOpen, isMinimized, closeModal } = useModal("message");
 
   const { messageListProps, messageFormProps } = useMessage({
     currentUserId: user?.id || "",
@@ -35,10 +30,12 @@ export function UserMessageModal() {
     <Modal
       isOpen={isOpen}
       isMinimized={isMinimized}
-      onClose={() => closeModal("message")}
-      onMinimize={() => toggleMinimize("message")}
+      onClose={closeModal}
+      onMinimize={closeModal}
       title="메시지"
-      className="flex flex-col h-160 w-110"
+      width="w-110"
+      height="h-160"
+      className="flex flex-col"
     >
       <MessageList {...messageListProps} currentUserId={user.id} />
       <MessageForm {...messageFormProps} />
@@ -65,11 +62,12 @@ export function AdminMessageModal() {
       onClose={() => closeModal("message")}
       onMinimize={() => toggleMinimize("message")}
       title="메시지"
-      className="flex h-160 w-180"
+      width="w-180"
+      height="h-160"
+      className="flex"
     >
       <UserList {...userListProps} />
 
-      {/* Messages - Right Side */}
       <div className="flex-1 flex flex-col">
         {userListProps?.selectedUser ? (
           <>
