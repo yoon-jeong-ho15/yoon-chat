@@ -1,15 +1,19 @@
 import { NoProfile } from "../../assets/Icon";
+import { useAuth } from "../../contexts";
 import { UI_TEXT } from "../../lib/constants";
 import type { Message } from "../../types/message";
+import type { RefObject } from "react";
 
 interface MessageListProps {
   messages: Message[];
-  currentUserId: string;
-  messageDivRef: React.RefObject<HTMLDivElement | null>;
+  messageDivRef: RefObject<HTMLDivElement | null>;
 }
 
-export default function MessageList(props: MessageListProps) {
-  const { messages, currentUserId, messageDivRef } = props;
+export default function MessageList({
+  messages,
+  messageDivRef,
+}: MessageListProps) {
+  const { user } = useAuth();
   return (
     <div className="flex-1 overflow-y-scroll pt-2 w-full" ref={messageDivRef}>
       {messages.length === 0 ? (
@@ -21,7 +25,7 @@ export default function MessageList(props: MessageListProps) {
           <MessageItem
             key={msg.id}
             message={msg}
-            isMe={msg.author.id === currentUserId}
+            isMe={msg.author.id === user?.id}
           />
         ))
       )}
@@ -38,7 +42,10 @@ function MessageItem({ message, isMe }: MessageItemProps) {
   const formattedDate = new Date(message.created_at).toLocaleString();
 
   return (
-    <div className={`px-5 pb-6 flex ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+    <div
+      className={`px-5 pb-6 flex ${isMe ? "flex-row-reverse" : "flex-row"}`}
+      data-id={message.id}
+    >
       <div
         className={`flex h-fit w-fit rounded-2xl py-1 pl-2 pr-5 max-w-[720px] bg-gradient-to-r
           shadow-lg items-center
@@ -47,9 +54,9 @@ function MessageItem({ message, isMe }: MessageItemProps) {
           }`}
       >
         <div className="flex flex-col justify-center items-center">
-          {message.author.profile_pic ? (
+          {message.author.profile_img ? (
             <img
-              src={message.author.profile_pic}
+              src={message.author.profile_img}
               alt={message.author.username}
               className="w-12 h-12 rounded-full bg-white"
             />

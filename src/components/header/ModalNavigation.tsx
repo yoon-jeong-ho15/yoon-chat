@@ -6,6 +6,7 @@ import {
 import { useModalStore, type ModalType } from "../../stores/modalStore";
 import GradientContainer from "../common/GradientContainer";
 import { useHeaderStore } from "../../stores/headerStore";
+import { useAuth } from "../../contexts";
 
 type TabItem = {
   title: string;
@@ -33,12 +34,15 @@ const tabs: TabItem[] = [
 
 export default function ModalNavigation() {
   const { setText } = useHeaderStore();
+  const { user } = useAuth();
 
   const toggleShow = useModalStore((state) => state.toggleShow);
 
+  if (!user) return null;
+
   return (
     <GradientContainer
-      outerClassName="p-[3px] rounded-full w-fit"
+      outerClassName="p-[3px] rounded-full"
       className="rounded-full flex"
     >
       {tabs.map((item) => {

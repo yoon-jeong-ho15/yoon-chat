@@ -61,7 +61,7 @@ export default function UserDetailModal({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <img
-                src={user.profilePic || "/default-avatar.png"}
+                src={user.profileImg || "/default-avatar.png"}
                 alt={user.username}
                 className="w-16 h-16 rounded-full object-cover"
               />

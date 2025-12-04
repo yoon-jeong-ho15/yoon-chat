@@ -23,12 +23,12 @@ export function transformMessageViewRow(row: MessageViewRow): Message {
     author: {
       id: row.author_id,
       username: row.author_username,
-      profile_pic: row.author_profile_pic,
+      profile_img: row.author_profile_img,
     },
     recipient: {
       id: row.recipient_id,
       username: row.recipient_username,
-      profile_pic: row.recipient_profile_pic,
+      profile_img: row.recipient_profile_img,
     },
     message: row.message,
     created_at: row.created_at,
@@ -50,11 +50,11 @@ export function transformUserRow(row: UserRow): User {
   return {
     id: row.id,
     username: row.username,
-    profilePic: row.profile_pic,
+    profileImg: row.profile_img,
     email: row.email,
     provider: row.provider,
     createdAt: row.created_at,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
   };
 }
 

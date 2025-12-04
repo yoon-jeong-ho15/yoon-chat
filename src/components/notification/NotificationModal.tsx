@@ -5,13 +5,23 @@ import { motion } from "motion/react";
 import { CheckIcon, BellIcon } from "@heroicons/react/24/outline";
 import { formatDate } from "../../utils/notification";
 import { useNotification } from "../../hooks/useNotification";
+import type { Notification } from "../../types/notification";
 
 export default function NotificationModal() {
   const { isOpen, isMinimized, closeModal, toggleMinimize } =
     useModal("notification");
   const { user } = useAuth();
-  const { notifications, unreadCount, handleMarkAsRead, handleMarkAllAsRead } =
+  const { notifications, unreadCount, markAsRead, markAllAsRead, viewDetail } =
     useNotification(user?.id);
+
+  const handleViewDetail = (notification: Notification) => {
+    viewDetail(notification);
+  };
+
+  const handleMarkAsRead = (e: React.MouseEvent, notificationId: string) => {
+    e.stopPropagation();
+    markAsRead(notificationId);
+  };
 
   return (
     <Modal
@@ -20,7 +30,7 @@ export default function NotificationModal() {
       onClose={closeModal}
       onMinimize={toggleMinimize}
       title="알림"
-      width="w-160"
+      width="w-100"
       height="h-160"
       className="flex flex-col overflow-hidden"
     >
@@ -36,7 +46,7 @@ export default function NotificationModal() {
           </div>
           {unreadCount > 0 && (
             <button
-              onClick={handleMarkAllAsRead}
+              onClick={markAllAsRead}
               className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1"
             >
               <CheckIcon className="w-3 h-3" />
@@ -53,11 +63,36 @@ export default function NotificationModal() {
         ) : (
           <div className="flex-1 overflow-y-auto space-y-2 pr-2">
             {notifications.map((notification) => (
-              <motion.div
-                key={notification.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`
+              <NotificationItem
+                notification={notification}
+                onClick={handleViewDetail}
+                onCheckClick={handleMarkAsRead}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
+interface NotificationItemProps {
+  notification: Notification;
+  onClick: (notification: Notification) => void;
+  onCheckClick: (e: React.MouseEvent, notificationId: string) => void;
+}
+
+function NotificationItem({
+  notification,
+  onClick,
+  onCheckClick,
+}: NotificationItemProps) {
+  return (
+    <motion.div
+      key={notification.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`
                     bg-white rounded-lg shadow-sm p-3
                     transition-all hover:shadow-md
                     ${
@@ -66,58 +101,39 @@ export default function NotificationModal() {
                         : ""
                     }
                   `}
-                onClick={() => {
-                  if (!notification.isRead) {
-                    handleMarkAsRead(notification.id);
-                  }
-                }}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3
-                        className={`text-sm font-semibold ${
-                          !notification.isRead
-                            ? "text-gray-900"
-                            : "text-gray-600"
-                        }`}
-                      >
-                        {notification.title}
-                      </h3>
-                      {!notification.isRead && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      )}
-                    </div>
-                    {notification.content && (
-                      <p className="text-xs text-gray-600 mb-2">
-                        {notification.content}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <span>{formatDate(notification.createdAt)}</span>
-                      <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs">
-                        {notification.type}
-                      </span>
-                    </div>
-                  </div>
-                  {!notification.isRead && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMarkAsRead(notification.id);
-                      }}
-                      className="p-1 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
-                      aria-label="Mark as read"
-                    >
-                      <CheckIcon className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+      onClick={() => onClick(notification)}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h3
+              className={`text-sm font-semibold ${
+                !notification.isRead ? "text-gray-900" : "text-gray-600"
+              }`}
+            >
+              {notification.title}
+            </h3>
+            {!notification.isRead && (
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+            )}
           </div>
+          {notification.content && (
+            <p className="text-xs text-gray-600 mb-2">{notification.content}</p>
+          )}
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <span>{formatDate(notification.createdAt)}</span>
+          </div>
+        </div>
+        {!notification.isRead && (
+          <button
+            onClick={(e) => onCheckClick(e, notification.id)}
+            className="p-1 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
+            aria-label="Mark as read"
+          >
+            <CheckIcon className="w-4 h-4" />
+          </button>
         )}
       </div>
-    </Modal>
+    </motion.div>
   );
 }

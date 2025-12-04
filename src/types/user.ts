@@ -1,7 +1,7 @@
 export type User = {
   id: string;
   username: string;
-  profilePic: string;
+  profileImg: string;
   email: string;
   provider: string;
   createdAt: string;
@@ -12,7 +12,7 @@ export type User = {
 export type UserRow = {
   id: string;
   username: string;
-  profile_pic: string;
+  profile_img: string;
   email: string;
   provider: string;
   created_at: string;

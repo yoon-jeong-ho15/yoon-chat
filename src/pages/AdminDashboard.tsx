@@ -117,7 +117,7 @@ export default function AdminDashboard() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <img
-                      src={u.profilePic || "/default-avatar.png"}
+                      src={u.profileImg || "/default-avatar.png"}
                       alt={u.username}
                       className="w-10 h-10 rounded-full object-cover mr-3"
                     />

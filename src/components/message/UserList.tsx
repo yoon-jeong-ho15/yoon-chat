@@ -3,13 +3,17 @@ import type { User } from "../../types/user";
 
 interface UserListProps {
   users: User[];
-  selectedUser: User | null;
   messageCount: Map<string, number>;
-  handleUserClick: (user: User) => void;
+  selectedUser: User | null;
+  toggleSelectedUser: (user: User) => void;
 }
 
-export default function UserList(props: UserListProps) {
-  const { users, selectedUser, messageCount, handleUserClick } = props;
+export default function UserList({
+  users,
+  messageCount,
+  selectedUser,
+  toggleSelectedUser,
+}: UserListProps) {
   return (
     <div
       className="w-70 h-full border-gray-400 border bg-gray-100
@@ -26,7 +30,7 @@ export default function UserList(props: UserListProps) {
             user={u}
             messageCount={messageCount.get(u.id) || 0}
             isSelected={selectedUser?.id === u.id}
-            onClick={handleUserClick}
+            onClick={toggleSelectedUser}
           />
         ))}
       </div>
@@ -55,9 +59,9 @@ function UserListItem({
       }`}
     >
       <div className="flex items-center gap-3">
-        {user.profilePic ? (
+        {user.profileImg ? (
           <img
-            src={user.profilePic}
+            src={user.profileImg}
             alt={user.username}
             className="size-10 rounded-full object-cover"
           />

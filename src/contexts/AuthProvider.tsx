@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .insert({
             id: supabaseUser.id,
             username,
-            profile_pic: supabaseUser.user_metadata?.avatar_url || "",
+            profile_img: supabaseUser.user_metadata?.avatar_url || "",
             email: supabaseUser.email || "",
             provider,
           })
@@ -197,7 +197,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { error: profileError } = await supabase.from("user").insert({
           id: data.user.id,
           username,
-          profile_pic: metadata?.profile_pic || "",
+          profile_img: metadata?.profile_img || "",
           email: data.user.email || "",
           provider: "email",
         });

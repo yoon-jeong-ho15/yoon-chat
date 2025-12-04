@@ -29,28 +29,33 @@ A real-time chat and profile application built with Vite + React + TypeScript.
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yoon-jeong-ho15/hello-friends.git
 cd hello-friends
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 Edit `.env` and add your Supabase credentials:
+
 ```
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 4. Set up Supabase Authentication:
+
    - Go to your Supabase project dashboard
    - Navigate to **Authentication** > **Providers**
    - Enable **Email** provider
@@ -66,10 +71,11 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
      5. Save the configuration
    - **Important**: Make sure the `user` table schema matches the auth requirements
      - The `id` field should be a UUID and should match the Supabase Auth user ID
-     - Required fields: `id`, `username`, `from`, `profile_pic`, `friend_group`
+     - Required fields: `id`, `username`, `from`, `profile_img`, `friend_group`
      - The `password` field can be empty for OAuth users
 
 5. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -107,6 +113,7 @@ hello-friends/
 ## Database Schema
 
 The app uses the following Supabase tables:
+
 - `user`: User information
 - `chatroom`: Chat rooms
 - `chatroom_member`: Chat room memberships
@@ -115,6 +122,7 @@ The app uses the following Supabase tables:
 - `notification`: User notifications
 
 And the following RPC functions:
+
 - `get_chatroom_data`: Fetch user's chatrooms
 - `check_chatroom`: Check if chatroom exists
 - `mark_chatroom_as_read`: Mark all messages in a chatroom as read
@@ -124,11 +132,13 @@ And the following RPC functions:
 ## Deployment
 
 ### AWS (S3 + CloudFront)
+
 1. Build the project: `npm run build`
 2. Upload the `dist/` folder to S3
 3. Configure CloudFront to serve from the S3 bucket
 
 ### Vercel
+
 1. Connect your GitHub repository to Vercel
 2. Vercel will automatically detect the Vite configuration
 3. Add environment variables in Vercel dashboard

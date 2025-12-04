@@ -1,24 +1,26 @@
 import { MESSAGE_MAX_LENGTH, UI_TEXT } from "../../lib/constants";
-import type { FormEvent, KeyboardEvent } from "react";
+import type { RefObject, FormEvent, KeyboardEvent, Dispatch, SetStateAction } from "react";
+import type { User } from "../../types/user";
 
 interface MessageFormProps {
   message: string;
-  setMessage: (message: string) => void;
+  setMessage: Dispatch<SetStateAction<string>>;
   isSubmitting: boolean;
-  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
-  handleSubmit: (e: FormEvent) => void;
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
+  handleSubmit: (e: FormEvent) => Promise<void>;
   handleKeyDown: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
+  selectedUser: User;
 }
 
-export default function MessageForm(props: MessageFormProps) {
-  const {
-    message,
-    setMessage,
-    isSubmitting,
-    textareaRef,
-    handleSubmit,
-    handleKeyDown,
-  } = props;
+export default function MessageForm({
+  message,
+  setMessage,
+  isSubmitting,
+  textareaRef,
+  handleSubmit,
+  handleKeyDown,
+}: MessageFormProps) {
+
   return (
     <form
       onSubmit={handleSubmit}
