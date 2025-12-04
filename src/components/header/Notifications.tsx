@@ -1,10 +1,10 @@
 import { BellIcon } from "@heroicons/react/24/outline";
 import { useNotification } from "../../hooks/useNotification";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuthContext } from "../../stores/authStore";
 import { useModal } from "../../stores/modalStore";
 
 export default function NotificationButton() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { unreadCount } = useNotification(user?.id);
   const { toggleShow } = useModal("notification");
 

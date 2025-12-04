@@ -2,12 +2,12 @@ import Modal from "../modal/Modal";
 import { useModal } from "../../stores/modalStore";
 import UserInfo from "./UserInfo";
 import UserProfile from "./UserProfile";
-import { useAuth } from "../../contexts";
+import { useAuthContext } from "../../stores/authStore";
 
 export default function AccountModal() {
   const { isOpen, isMinimized, closeModal, toggleMinimize } =
     useModal("account");
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   if (!user) return null;
 

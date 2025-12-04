@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthProvider";
+import { useEffect } from "react";
+import { useAuthStore } from "./stores/authStore";
 import LoginPage from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/route/AdminRoute";
@@ -8,33 +9,37 @@ import Header from "./components/header/Header";
 import ProtectedRoute from "./components/route/ProtectedRoute";
 
 function App() {
+  const initAuth = useAuthStore((state) => state.initAuth);
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
+
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <div className="flex flex-col w-full h-screen bg-gray-200">
-          <Header />
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            {/* Admin-only routes */}
-            <Route
-              path="/admin"
-              element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              }
-            />
-          </Routes>
-        </div>
-      </AuthProvider>
+      <div className="flex flex-col w-full h-screen bg-gray-200">
+        <Header />
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Admin-only routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }

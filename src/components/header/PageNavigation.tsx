@@ -4,11 +4,12 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts";
+import { useAuthContext, useAuth } from "../../stores/authStore";
 import { isAdmin } from "../../utils/user";
 
 export default function PageNavigation() {
-  const { user, logout } = useAuth();
+  const { user } = useAuthContext();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {

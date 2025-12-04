@@ -6,7 +6,7 @@ import {
 import { useModalStore, type ModalType } from "../../stores/modalStore";
 import GradientContainer from "../common/GradientContainer";
 import { useHeaderStore } from "../../stores/headerStore";
-import { useAuth } from "../../contexts";
+import { useAuthContext } from "../../stores/authStore";
 
 type TabItem = {
   title: string;
@@ -34,7 +34,7 @@ const tabs: TabItem[] = [
 
 export default function ModalNavigation() {
   const { setText } = useHeaderStore();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const toggleShow = useModalStore((state) => state.toggleShow);
 

@@ -16,10 +16,10 @@ import {
 import { isAdmin } from "../../utils/user";
 import { useModal } from "../../stores/modalStore";
 import { validateMessage } from "../../utils/message";
-import { useAuth } from "../../contexts";
+import { useAuthContext } from "../../stores/authStore";
 
 export function useMessage() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const currentUserId = user?.id || "";
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);

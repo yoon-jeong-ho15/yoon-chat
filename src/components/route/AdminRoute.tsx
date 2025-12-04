@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuthContext } from "../../stores/authStore";
 import { isAdmin } from "../../utils/user";
 
 export default function AdminRoute({
@@ -7,7 +7,7 @@ export default function AdminRoute({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuthContext();
 
   if (isLoading) {
     return (

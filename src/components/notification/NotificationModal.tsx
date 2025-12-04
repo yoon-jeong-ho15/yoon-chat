@@ -1,6 +1,6 @@
 import Modal from "../modal/Modal";
 import { useModal } from "../../stores/modalStore";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuthContext } from "../../stores/authStore";
 import { motion } from "motion/react";
 import { CheckIcon, BellIcon } from "@heroicons/react/24/outline";
 import { formatDate } from "../../utils/notification";
@@ -10,7 +10,7 @@ import type { Notification } from "../../types/notification";
 export default function NotificationModal() {
   const { isOpen, isMinimized, closeModal, toggleMinimize } =
     useModal("notification");
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { notifications, unreadCount, markAsRead, markAllAsRead, viewDetail } =
     useNotification(user?.id);
 

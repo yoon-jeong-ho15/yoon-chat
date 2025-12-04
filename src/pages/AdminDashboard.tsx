@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../contexts/useAuth";
+import { useAuthContext } from "../stores/authStore";
 import { fetchUsersWithAuthLogs } from "../lib/data/userActivity";
 import type { User } from "../types/user";
 import { Navigate } from "react-router-dom";
@@ -19,7 +19,7 @@ type AuditLogEntry = {
 };
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);

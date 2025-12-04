@@ -1,5 +1,5 @@
 import { NoProfile } from "../../assets/Icon";
-import { useAuth } from "../../contexts";
+import { useAuthContext } from "../../stores/authStore";
 import { UI_TEXT } from "../../lib/constants";
 import type { Message } from "../../types/message";
 import type { RefObject } from "react";
@@ -13,7 +13,7 @@ export default function MessageList({
   messages,
   messageDivRef,
 }: MessageListProps) {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   return (
     <div className="flex-1 overflow-y-scroll pt-2 w-full" ref={messageDivRef}>
       {messages.length === 0 ? (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "../stores/authStore";
 import { useNavigate } from "react-router-dom";
 import GradientContainer from "../components/common/GradientContainer";
 import { GoogleIcon } from "../assets/Icon";
