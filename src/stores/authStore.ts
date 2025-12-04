@@ -221,8 +221,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
               id: session.user.id,
               username,
               profile_img: session.user.user_metadata?.avatar_url || "",
-              email: session.user.email || "",
-              provider,
             })
             .select()
             .single();
